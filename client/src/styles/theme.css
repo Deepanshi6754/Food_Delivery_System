@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+:root {
+  /* Color Palette - Light Premium Specification */
+  --color-bg: #FFF8F0;          /* Warm Cream */
+  --color-primary: #F97316;     /* Tangerine Orange */
+  --color-primary-hover: #EA580C;
+  --color-primary-light: #FFEDD5; /* Light Accent */
+  --color-primary-glow: rgba(249, 115, 22, 0.15);
+  
+  --color-secondary: #FFFFFF;   /* Pure White */
+  --color-card-bg: #FFFFFF;
+  
+  --color-text-primary: #292524;   /* Charcoal */
+  --color-text-secondary: #78716C; /* Warm Gray */
+  --color-text-muted: #A8A29E;
+  
+  --color-border: #F3E8DC;
+  --color-border-light: #F7EFE6;
+  --color-border-hover: #FED7AA;
+  
+  --color-success: #15803D;     /* Forest Green */
+  --color-success-bg: #DCFCE7;
+  --color-error: #DC2626;       /* Crimson Red */
+  --color-error-bg: #FEE2E2;
+  --color-warning: #D97706;
+  --color-warning-bg: #FEF3C7;
+  
+  /* Veg / Non-Veg Indicators */
+  --color-veg: #16A34A;
+  --color-nonveg: #DC2626;
+  
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(41, 37, 36, 0.05);
+  --shadow-md: 0 4px 16px -2px rgba(41, 37, 36, 0.06), 0 2px 6px -1px rgba(249, 115, 22, 0.04);
+  --shadow-lg: 0 12px 32px -4px rgba(41, 37, 36, 0.08), 0 4px 12px -2px rgba(249, 115, 22, 0.06);
+  --shadow-orange: 0 8px 24px -4px rgba(249, 115, 22, 0.35);
+  
+  /* Transitions */
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Container */
+  --max-width: 1240px;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Common Layout Container */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
