@@ -95,8 +95,7 @@ exports.createOrder = async (req, res, next) => {
       },
       payment: {
         method: paymentMethod,
-        status: paymentMethod === 'cod' ? 'pending' : 'completed',
-        transactionId: `TXN-${Date.now()}`
+        status: 'pending'
       },
       orderStatus: 'placed',
       statusHistory: [
@@ -111,16 +110,17 @@ exports.createOrder = async (req, res, next) => {
       couponApplied: cart.appliedCoupon ? cart.appliedCoupon.code : null
     });
 
-    // Clear user cart
-    cart.items = [];
-    cart.restaurant = undefined;
-    cart.appliedCoupon = undefined;
-    cart.subtotal = 0;
-    cart.deliveryFee = 0;
-    cart.taxes = 0;
-    cart.discount = 0;
-    cart.finalAmount = 0;
-    await cart.save();
+    if (paymentMethod === 'cod') {
+      cart.items = [];
+      cart.restaurant = undefined;
+      cart.appliedCoupon = undefined;
+      cart.subtotal = 0;
+      cart.deliveryFee = 0;
+      cart.taxes = 0;
+      cart.discount = 0;
+      cart.finalAmount = 0;
+      await cart.save();
+    }
 
     // Create In-App Notification
     const notif = await Notification.create({

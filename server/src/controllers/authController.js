@@ -83,7 +83,7 @@ exports.login = async (req, res, next) => {
         { email: loginIdentifier.toLowerCase() },
         { phone: loginIdentifier }
       ]
-    }).select('+password');
+    }).select('+passwordHash');
 
     if (!user) {
       return res.status(401).json({
@@ -173,7 +173,7 @@ exports.changePassword = async (req, res, next) => {
       });
     }
 
-    const user = await User.findById(req.user._id).select('+password');
+    const user = await User.findById(req.user._id).select('+passwordHash');
     const isMatch = await user.matchPassword(currentPassword);
 
     if (!isMatch) {

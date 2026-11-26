@@ -246,7 +246,9 @@ const seedDatabase = async () => {
     }
 
     // Ensure sample orders for the owner's restaurant across different statuses
-    const existingOrdersCount = await Order.countDocuments({ 'restaurant.id': sampleRestaurant._id });
+    const existingOrdersCount = sampleRestaurant
+      ? await Order.countDocuments({ 'restaurant.id': sampleRestaurant._id })
+      : 0;
     if (existingOrdersCount < 4 && sampleRestaurant) {
       const items = await MenuItem.find({ restaurant: sampleRestaurant._id }).limit(3);
       if (items.length > 0) {
@@ -313,7 +315,9 @@ const seedDatabase = async () => {
     }
 
     // Ensure sample payout history exists for owner's restaurant
-    const payoutCount = await Payout.countDocuments({ restaurant: sampleRestaurant._id });
+    const payoutCount = sampleRestaurant
+      ? await Payout.countDocuments({ restaurant: sampleRestaurant._id })
+      : 0;
     if (payoutCount === 0 && sampleRestaurant) {
       await Payout.create([
         {
@@ -356,7 +360,9 @@ const seedDatabase = async () => {
     if (!sampleRestaurant) {
       sampleRestaurant = await Restaurant.findOne({ slug: 'la-pinoz-gourmet-pizza' }) || await Restaurant.findOne();
     }
-    const sampleItem = await MenuItem.findOne({ restaurant: sampleRestaurant._id });
+    const sampleItem = sampleRestaurant
+      ? await MenuItem.findOne({ restaurant: sampleRestaurant._id })
+      : null;
     const customerAddress = (await Address.findOne({ user: customer._id })) || {
       label: 'Home',
       recipientName: customer.name,

@@ -109,7 +109,7 @@ const loginRider = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+passwordHash');
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -229,7 +229,7 @@ const updateRiderPassword = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user._id).select('+password');
+    const user = await User.findById(req.user._id).select('+passwordHash');
     const isMatch = user.matchPassword
       ? await user.matchPassword(currentPassword)
       : await bcrypt.compare(currentPassword, user.password);

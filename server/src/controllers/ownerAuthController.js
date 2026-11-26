@@ -128,7 +128,7 @@ const loginOwner = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+passwordHash');
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -253,7 +253,7 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user._id).select('+password');
+    const user = await User.findById(req.user._id).select('+passwordHash');
     const isMatch = await user.matchPassword(currentPassword);
     if (!isMatch) {
       return res.status(401).json({

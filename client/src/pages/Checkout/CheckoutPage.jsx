@@ -20,6 +20,20 @@ import api from '../../services/api';
 import { clearCart, fetchCart } from '../../features/cart/cartSlice';
 import AddressSelectorModal from '../../components/checkout/AddressSelectorModal';
 
+const loadRazorpayCheckout = () => new Promise((resolve, reject) => {
+  if (window.Razorpay) {
+    resolve();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+  script.async = true;
+  script.onload = resolve;
+  script.onerror = () => reject(new Error('Unable to load Razorpay Checkout. Please try again.'));
+  document.body.appendChild(script);
+});
+
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -87,20 +101,45 @@ export default function CheckoutPage() {
 
       // Handle Online Payment (Razorpay)
       if (paymentMethod === 'razorpay') {
-        // Create Razorpay order on backend
+        await loadRazorpayCheckout();
+
         const razorOrderRes = await api.post('/payments/create-order', {
+          orderId: order._id,
           amount: order.pricing.finalAmount,
           receipt: `rcpt_${order.orderNumber}`
         });
 
         const rzpData = razorOrderRes.data.data;
+        const paymentResponse = await new Promise((resolve, reject) => {
+          const checkout = new window.Razorpay({
+            key: razorOrderRes.data.keyId,
+            amount: rzpData.amount,
+            currency: rzpData.currency,
+            name: 'FoodDelight',
+            description: `Order ${order.orderNumber}`,
+            order_id: rzpData.id,
+            prefill: {
+              name: user?.name,
+              email: user?.email,
+              contact: user?.phone
+            },
+            handler: resolve,
+            modal: {
+              ondismiss: () => reject(new Error('Payment was cancelled.'))
+            }
+          });
 
-        // Verify payment on backend
+          checkout.on('payment.failed', (response) => {
+            reject(new Error(response.error?.description || 'Razorpay payment failed.'));
+          });
+          checkout.open();
+        });
+
         await api.post('/payments/verify', {
           orderId: order._id,
-          razorpay_order_id: rzpData.id,
-          razorpay_payment_id: `pay_${Date.now()}`,
-          razorpay_signature: 'simulated_valid_signature'
+          razorpay_order_id: paymentResponse.razorpay_order_id,
+          razorpay_payment_id: paymentResponse.razorpay_payment_id,
+          razorpay_signature: paymentResponse.razorpay_signature
         });
       }
 
@@ -117,7 +156,7 @@ export default function CheckoutPage() {
       // Navigate directly to Live Order Tracking!
       navigate(`/orders/${order._id}/track?placed=true`);
     } catch (err) {
-      setErrorMessage(err.response?.data?.message || 'Failed to place order. Please try again.');
+      setErrorMessage(err.response?.data?.message || err.message || 'Failed to place order. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
